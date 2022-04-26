@@ -1,0 +1,51 @@
+Вы вошли как <?=$this->user->getName();?>
+
+<form action="/user/logout">
+    <input type="submit" value="Выйти">
+</form>
+
+<br>
+<br>
+<form enctype="multipart/form-data" action="/blog" method="post">
+    Сообщение:<br>
+    <textarea name="message" style="width: 250px; height: 100px;"></textarea><br>
+    Прикрепить картинку:<br>
+    <input name="image" type="file" ><br>
+    <input type="submit" value="Отправить">
+</form>
+
+<br>
+<br>
+<? foreach ($this->posts as $post): ?>
+    <div class="post">
+        <span class="user">Сообщение от <a href="/blog/view?id=<?=$post['user_id'];?>"><b><?=$post['name'];?></b></a> отправлено <?=$post['created_at'];?></span>
+        <div class="message"><?=$post['message'];?></div>
+        <? if (!empty($post['image']) && file_exists('images/'.$post['image'])):?>
+            <img src="/blog/image?id=<?=$post['message_id'];?>"></img>
+        <? endif; ?>
+
+        <?php if(in_array($this->user->getId(), ADMINS)): ?>
+            <br><a href="/blog/delete?id=<?=$post['message_id'];?>" class="delete">удалить</a>
+        <? endif; ?>
+    </div>
+<? endforeach;?>
+
+<style>
+    .post {
+        border: 1px solid grey;
+        margin-top: 10px;
+        padding: 5px;
+        width: 250px;
+    }
+    .user {
+        color: grey;
+        font-size: 11px;
+    }
+    .message {
+        margin-top: 5px;
+        padding-left: 5px;
+    }
+    .delete {
+        color: red;
+    }
+</style>
