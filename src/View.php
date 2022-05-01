@@ -13,6 +13,7 @@ class View
 {
     private $templatePath = '';
     private $data = [];
+    private $twig;
 
     public  function __construct()
     {
@@ -22,6 +23,11 @@ class View
     public  function assign(string $name, $value)
     {
         $this->data[$name] = $value;
+    }
+
+    public function  __get($varName)
+    {
+        return $this->data[$varName] ?? null;
     }
 
     public function render(string $tpl, $data =[]): string
@@ -34,10 +40,16 @@ class View
 
     }
 
-    public function  __get($varName)
+    public function renderTwig(string $tpl, $data = [])
     {
-        return $this->data[$varName] ?? null;
-    }
+        $this->data += $data;
 
+        if (!$this->twig) {
+            $loader = new \Twig\Loader\FilesystemLoader($this->templatePath);
+            $this->twig = new \Twig\Environment($loader);
+        }
+
+        return $this->twig->render($tpl, $this->data);
+    }
 }
 

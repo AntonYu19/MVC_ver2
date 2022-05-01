@@ -31,22 +31,23 @@ class User extends AbstractController
             $this->view->assign('error', 'Введите имя и пароль');
         }
 
-        return $this->view->render('User/register.phtml', [
+        return $this->view->renderTwig('User/register.twig', [
             'user' => UserModel::getById((int)$_GET['id'])
         ]);
     }
 
     public function registerAction()
     {
+        $success = true;
+
+        if (isset($_POST)) {
 
         $name = (isset($_POST['name'])) ? trim($_POST['name']) : '';
         $email = (isset($_POST['email'])) ? trim($_POST['email']) : '';
         $password = (isset($_POST['password'])) ? trim($_POST['password']) : '';
         $password_repeat = (isset($_POST['password_repeat'])) ? trim($_POST['password_repeat']) : '';
 
-        $success = true;
 
-        if (isset($_POST['email'])) {
 
             if (!$name) {
                 $this->view->assign('error', 'Имя не может быть пустым');
@@ -98,14 +99,14 @@ class User extends AbstractController
         }
 
 
-        return $this->view->render('User/register.phtml', [
+        return $this->view->renderTwig('User/register.twig', [
             'user' => UserModel::getById((int)$_GET['id'])
         ]);
     }
 
     public function profileAction()
     {
-        return $this->view->render('User/profile.phtml', [
+        return $this->view->render('User/profile.twig', [
             'user' => UserModel::getById((int)$_GET['id'])
         ]);
 

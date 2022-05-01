@@ -4,6 +4,7 @@ namespace App\Model;
 
 use Base\AbstractModel;
 use Base\Db;
+use Imagick;
 
 class Message extends AbstractModel
 {
@@ -31,28 +32,30 @@ class Message extends AbstractModel
         return $this;
     }
 
-    public function setImage(array $img)
+    public function setImage(array $img, int $width, int $height = 0)
     {
         if (!empty($img)) {
             $imagePath = DIRECTORY_SEPARATOR . 'images' . DIRECTORY_SEPARATOR;
             $imageName = time();
+            $ext = ($img['type'] == 'image/png') ? '.png' : '.jpg';
 
-            if ($img['type'] == 'image/jpeg') {
-                $m_img = imagecreatefromjpeg($img['tmp_name']);
-                imagejpeg($m_img, PROJECT_ROOT_DIR . $imagePath . $imageName . '.jpg');
-                $image = $imageName . '.jpg';
+            $watermark = new Imagick();
+            $watermark->readImage(PROJECT_ROOT_DIR . $imagePath . "watermark.png");
 
+
+            $imagick = new Imagick();
+            $imagick->readImage($img['tmp_name']);
+            $imagick->setImageCompression(imagick::COMPRESSION_JPEG);
+            $imagick->setImageCompressionQuality(90);
+            if ($height > 0) {
+                $imagick->cropThumbnailImage($width, $height, true);
             } else {
-                if ($img['type'] == 'image/png') {
-                    $m_img = imagecreatefrompng($img['tmp_name']);
-                    imagepng($m_img, PROJECT_ROOT_DIR . $imagePath . $imageName . '.png');
-                    $image = $imageName . '.png';
-
-                } else {
-                    $image = null;
-
-                }
+                $imagick->scaleImage($width, 9999, true);
             }
+
+            $imagick->compositeImage($watermark, Imagick::COMPOSITE_OVER, 15, 15);
+            $imagick->writeImage(PROJECT_ROOT_DIR . $imagePath . $imageName . $ext);
+            $image = $imageName . $ext;
         }
 
         $this->image = $image;

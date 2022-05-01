@@ -19,6 +19,6 @@
 <br>
 <br>
 
-<?php if($this->error): ?>
-    <span style="color: red"><?=$this->error;?></span>
-<?php endif; ?>
+{% if error %}
+    <span style="color: red">{{ error }}</span>
+{% endif %}

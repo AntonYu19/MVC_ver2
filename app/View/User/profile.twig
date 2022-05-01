@@ -1,0 +1,7 @@
+{%  if user %}
+    name: {{ user.getName() }} <br>
+    email: {{ user->getEmail() }} <br>
+    registered: {{ getCreatedAt() }}
+{% else %}
+    Пользователь не найден
+{% endif %}

@@ -2,9 +2,8 @@
   "require": {
     "swiftmailer/swiftmailer": "dev-master",
     "phpmailer/phpmailer": "dev-master",
-    "twig/twig": "^2.0",
-    "symfony/filesystem": "^3.4",
-    "nesbot/carbon": "dev-master"
+    "twig/twig": "^3.0"
+
   },
 
   "autoload": {

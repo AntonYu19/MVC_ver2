@@ -3,6 +3,7 @@ namespace  App\Controller;
 
 use App\Model\Message as MessageModel;
 use Base\AbstractController;
+use Base\Db;
 
 class Blog extends AbstractController
 {
@@ -26,14 +27,14 @@ class Blog extends AbstractController
             if ($success) {
                 $message = (new MessageModel())
                     ->setMessage($message)
-                    ->setImage($image)
+                    ->setImage($image, 200)
                     ->setUserId($_SESSION['id']);
 
                 $message->save();
             }
         }
 
-        return $this->view->render('Blog/index.phtml', [
+        return $this->view->renderTwig('Blog/index.twig', [
             'user' => $this->user,
             'posts' =>MessageModel::getList()
         ]);
@@ -69,7 +70,7 @@ class Blog extends AbstractController
         header('Content-type: image/png');
         $message = MessageModel::getById((int)$_GET['id']);
 
-        include '\images\\' . $message['image'];
+        include 'images\\' . $message['image'];
     }
 
 }
